@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found</title>
+    <style>
+        /* 典型的なNginxのエラーページを模倣したデザイン */
+        body {
+            font-family: Tahoma, Verdana, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+            margin: 50px;
+        }
+        h1 { font-size: 24px; font-weight: normal; }
+        hr { border: 0; border-top: 1px solid #cccccc; }
+        
+        /* 真実が暴かれた時に表示する隠しエリア（最初は非表示） */
+        #hidden-terminal {
+            display: none; /* ここで隠している */
+            background-color: #000;
+            color: #00ff00;
+            padding: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 50px;
+            border: 2px solid #00ff00;
+        }
+        a { color: #00ff00; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>404 Not Found</h1>
+    <p>The requested URL was not found on this server.</p>
+    <hr>
+    <p><i>nginx/1.18.0 (Ubuntu)</i></p>
+
+    <div id="hidden-terminal">
+        <p>> SYSTEM OVERRIDE...</p>
+        <p>> CONNECTION ESTABLISHED.</p>
+        <p id="secret-message">Loading...</p>
+        <p>> <a id="secret-link" href="#">[ ACCESS TARGET ]</a></p>
+    </div>
+
+    <script>
+        // -------------------------------------------------------
+        // NeuroTechCamp Investigation Script
+        // -------------------------------------------------------
+        
+        // さっきのGASのURLをここに貼る
+        const ENDPOINT = "https://script.google.com/macros/s/AKfycbycjZA042uc-TTe55Q-yCEqklxxbMuiAo_Tsz5qA3WZP98LQs1LvU9N8u6Ydhoj-s4u_A/exec";  //"YOUR_GAS_URL_HERE"; 
+
+        async function checkStatus() {
+            try {
+                // 開発者ツール(F12)を見ている人へのヒント
+                console.log("Connecting to backend system...");
+                
+                const response = await fetch(ENDPOINT);
+                const data = await response.json();
+
+                // F12コンソールに生データを出力（これが技術的な「証拠」になる）
+                console.log("Response Data:", data);
+
+                if (data.status === "200_OK") {
+                    // 成功時（深夜0時）：偽装を解除して真実を表示
+                    document.body.style.backgroundColor = "#111"; // 背景を黒く
+                    document.body.style.color = "#ddd";
+                    document.querySelector("h1").innerText = "Connection Established";
+                    
+                    document.getElementById("hidden-terminal").style.display = "block";
+                    document.getElementById("secret-message").innerText = data.message;
+                    document.getElementById("secret-link").href = data.link;
+                } else {
+                    // 失敗時：コンソールにだけエラーを吐く（画面は404のまま）
+                    console.error("Access Denied: It is not the right time.");
+                }
+
+            } catch (error) {
+                console.error("System Error:", error);
+            }
+        }
+
+        // ページを開いた瞬間に実行
+        checkStatus();
+    </script>
+</body>
+</html>
